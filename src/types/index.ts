@@ -53,6 +53,18 @@ export interface Ticket {
   category: string
   createdAt: Date
   assignedTo?: string
+  description?: string
+  messages?: TicketMessage[]
+}
+
+export interface TicketMessage {
+  id: string
+  ticketId: string
+  userId: string
+  userName: string
+  userEmail: string
+  message: string
+  createdAt: Date
 }
 
 export interface QuickRequest {
@@ -72,8 +84,16 @@ export interface Invite {
   createdBy: string
   used: boolean
   createdAt: Date
+  lastSentAt?: Date
   usedAt?: Date
   usedBy?: string
+}
+
+export interface AllowedEmail {
+  id: string
+  email: string
+  importedFrom: "365" | "manual"
+  createdAt: Date
 }
 
 export interface AuthState {

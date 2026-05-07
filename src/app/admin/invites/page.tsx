@@ -4,7 +4,6 @@ import React from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 import { InviteGenerator } from "@/components/admin/InviteGenerator"
-import { InviteList } from "@/components/admin/InviteList"
 import { UserManager } from "@/components/admin/UserManager"
 import { MainLayout } from "@/components/layout/MainLayout"
 import { Shield, ArrowLeft } from "lucide-react"
@@ -60,8 +59,6 @@ export default function AdminInvitesPage() {
         </div>
 
         <InviteGenerator />
-
-        <InviteList />
 
         <UserManager />
       </div>

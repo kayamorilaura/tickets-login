@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext"
 import { MainLayout } from "@/components/layout/MainLayout"
 import { TicketFilters } from "@/components/dashboard/TicketFilters"
 import { Ticket } from "lucide-react"
+import { mockTickets, mockUsers } from "@/lib/mockData"
 
 export default function TicketsPage() {
   const { isAuthenticated, isLoading } = useAuth()
@@ -35,6 +36,38 @@ export default function TicketsPage() {
           Visualização completa de todos os tickets do sistema.
         </p>
         <TicketFilters />
+
+        <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-sm">
+          <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
+            <thead className="bg-gray-50 text-gray-500 uppercase tracking-wide text-xs">
+              <tr>
+                <th className="px-5 py-3">ID</th>
+                <th className="px-5 py-3">Título</th>
+                <th className="px-5 py-3">Categoria</th>
+                <th className="px-5 py-3">Urgência</th>
+                <th className="px-5 py-3">Estado</th>
+                <th className="px-5 py-3">Atribuído a</th>
+                <th className="px-5 py-3">Criado em</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 bg-white text-gray-700">
+              {mockTickets.map((ticket) => {
+                const assigned = mockUsers.find((user) => user.id === ticket.assignedTo)
+                return (
+                  <tr key={ticket.id} className="hover:bg-gray-50">
+                    <td className="px-5 py-4 font-medium text-gray-900">{ticket.id}</td>
+                    <td className="px-5 py-4">{ticket.title}</td>
+                    <td className="px-5 py-4">{ticket.category}</td>
+                    <td className="px-5 py-4">{ticket.urgency}</td>
+                    <td className="px-5 py-4">{ticket.status}</td>
+                    <td className="px-5 py-4">{assigned?.name ?? "—"}</td>
+                    <td className="px-5 py-4">{ticket.createdAt.toLocaleDateString("pt-PT")}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </MainLayout>
   )

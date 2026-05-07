@@ -7,42 +7,81 @@ import { MainLayout } from "@/components/layout/MainLayout"
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TrendingUp, AlertCircle, CheckCircle, Clock } from "lucide-react"
+import { mockTickets } from "@/lib/mockData"
 
-// Mock data for charts
-const ticketsOverTime = [
-  { month: "Jan", open: 24, closed: 40, pending: 20 },
-  { month: "Fev", open: 30, closed: 45, pending: 25 },
-  { month: "Mar", open: 28, closed: 50, pending: 22 },
-  { month: "Abr", open: 35, closed: 55, pending: 30 },
-  { month: "Mai", open: 32, closed: 60, pending: 28 },
-]
+const ticketsByCategory = Object.entries(
+  mockTickets.reduce<Record<string, number>>((acc, ticket) => {
+    acc[ticket.category] = (acc[ticket.category] || 0) + 1
+    return acc
+  }, {})
+).map(([name, value]) => ({
+  name,
+  value,
+  color:
+    name === "Hardware"
+      ? "#3b82f6"
+      : name === "Software"
+      ? "#8b5cf6"
+      : name === "Rede"
+      ? "#ec4899"
+      : name === "Segurança"
+      ? "#f59e0b"
+      : "#6b7280",
+}))
 
-const ticketsByCategory = [
-  { name: "Hardware", value: 35, color: "#3b82f6" },
-  { name: "Software", value: 28, color: "#8b5cf6" },
-  { name: "Rede", value: 18, color: "#ec4899" },
-  { name: "Segurança", value: 15, color: "#f59e0b" },
-  { name: "Outro", value: 4, color: "#6b7280" },
+const urgencyDistribution = Object.entries(
+  mockTickets.reduce<Record<string, number>>((acc, ticket) => {
+    acc[ticket.urgency] = (acc[ticket.urgency] || 0) + 1
+    return acc
+  }, {})
+).map(([name, value]) => ({
+  name: name === "high" ? "Alta" : name === "medium" ? "Média" : "Baixa",
+  value,
+  color: name === "high" ? "#ef4444" : name === "medium" ? "#f59e0b" : "#10b981",
+}))
+
+const ticketsOverTime = mockTickets.map((ticket) => ({
+  month: ticket.createdAt.toLocaleString("pt-PT", { month: "short" }),
+  open: ticket.status === "open" ? 1 : 0,
+  closed: ticket.status === "closed" ? 1 : 0,
+  pending: ticket.status === "open" ? 0 : 0,
+}))
+
+const ticketStatusMetrics = [
+  {
+    label: "Abertos",
+    value: mockTickets.filter((ticket) => ticket.status === "open").length,
+    color: "bg-blue-100",
+    icon: Clock,
+    textColor: "text-blue-600",
+  },
+  {
+    label: "Resolvidos",
+    value: mockTickets.filter((ticket) => ticket.status === "closed").length,
+    color: "bg-green-100",
+    icon: CheckCircle,
+    textColor: "text-green-600",
+  },
+  {
+    label: "Pendentes",
+    value: mockTickets.filter((ticket) => ticket.status === "open" || ticket.status === "passed").length,
+    color: "bg-yellow-100",
+    icon: AlertCircle,
+    textColor: "text-yellow-600",
+  },
+  {
+    label: "Total",
+    value: mockTickets.length,
+    color: "bg-purple-100",
+    icon: TrendingUp,
+    textColor: "text-purple-600",
+  },
 ]
 
 const technicianPerformance = [
-  { name: "João Silva", resolved: 45, pending: 5, avg_time: "2.5h" },
-  { name: "Maria Costa", resolved: 52, pending: 3, avg_time: "2.2h" },
-  { name: "Pedro Oliveira", resolved: 38, pending: 8, avg_time: "3.1h" },
-  { name: "Ana Santos", resolved: 41, pending: 6, avg_time: "2.8h" },
-]
-
-const urgencyDistribution = [
-  { name: "Alta", value: 28, color: "#ef4444" },
-  { name: "Média", value: 45, color: "#f59e0b" },
-  { name: "Baixa", value: 27, color: "#10b981" },
-]
-
-const ticketStatusMetrics = [
-  { label: "Abertos", value: 32, color: "bg-blue-100", icon: Clock, textColor: "text-blue-600" },
-  { label: "Resolvidos", value: 245, color: "bg-green-100", icon: CheckCircle, textColor: "text-green-600" },
-  { label: "Pendentes", value: 18, color: "bg-yellow-100", icon: AlertCircle, textColor: "text-yellow-600" },
-  { label: "Total", value: 295, color: "bg-purple-100", icon: TrendingUp, textColor: "text-purple-600" },
+  { name: "Laura Kayamori", resolved: 12, pending: 2, avg_time: "2.4h" },
+  { name: "Pedro Silva", resolved: 9, pending: 3, avg_time: "2.8h" },
+  { name: "Mariana Costa", resolved: 7, pending: 4, avg_time: "3.1h" },
 ]
 
 export default function EstatisticasPage() {
